@@ -25,7 +25,7 @@ public class VeinHudOverlay {
 
         int x = 10;
         int y = 10;
-        int width = 244;
+        int width = 252;
 
         boolean hasMultipleSessions = allSessions.size() > 1;
         int extraSessionHeight = hasMultipleSessions ? 14 : 0;
@@ -52,7 +52,11 @@ public class VeinHudOverlay {
         // Header (32-bit ARGB colors with full 0xFF alpha)
         String headerTitle = String.format("◆ %s ◆", activeSession.getName().toUpperCase());
         drawContext.drawText(tr, headerTitle, x + 6, y + 6, 0xFF00FFFF, true);
-        drawContext.drawText(tr, String.format("Proj: %.0fm", data.getProjectionDistance()), x + width - 68, y + 6, 0xFFAAAAAA, false);
+
+        String autoText = AutoScanner.getInstance().isEnabled() ? "§aAuto§r" : "§8Auto§r";
+        String rightHeader = String.format("%s §7| %.0fm§r", autoText, data.getProjectionDistance());
+        int rightWidth = tr.getWidth(rightHeader);
+        drawContext.drawText(tr, rightHeader, x + width - rightWidth - 6, y + 6, 0xFFAAAAAA, false);
 
         int lineY = y + 20;
         int spacing = 11;

@@ -5,6 +5,7 @@
   "key.veinsurveyor.add_point": "Survey Ore Block (Add Point)",
   "key.veinsurveyor.undo_point": "Undo Last Survey Point",
   "key.veinsurveyor.clear_points": "Clear Active Vein Points",
+  "key.veinsurveyor.toggle_auto_scan": "Toggle Auto-Detect Ores (50m)",
   "key.veinsurveyor.new_session": "New Vein Session",
   "key.veinsurveyor.delete_session": "Delete Active Vein Session",
   "key.veinsurveyor.cycle_session": "Cycle Active Vein Session",

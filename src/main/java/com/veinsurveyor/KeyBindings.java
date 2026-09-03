@@ -17,6 +17,7 @@ public class KeyBindings {
     private static KeyBinding addSampleKey;
     private static KeyBinding undoSampleKey;
     private static KeyBinding clearSamplesKey;
+    private static KeyBinding toggleAutoScanKey;
     private static KeyBinding newSessionKey;
     private static KeyBinding deleteSessionKey;
     private static KeyBinding cycleSessionKey;
@@ -42,6 +43,12 @@ public class KeyBindings {
         clearSamplesKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.clear_points",
                 GLFW.GLFW_KEY_KP_2,
+                category
+        ));
+
+        toggleAutoScanKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.veinsurveyor.toggle_auto_scan",
+                GLFW.GLFW_KEY_KP_3,
                 category
         ));
 
@@ -76,12 +83,15 @@ public class KeyBindings {
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(KeyBindings::onClientTick);
-        DebugLog.log("All 8 Numpad keybindings registered successfully (VeinSurveyor)");
+        DebugLog.log("All 9 Numpad keybindings registered successfully (VeinSurveyor)");
     }
 
     private static void onClientTick(MinecraftClient client) {
         if (client.player == null || client.world == null) return;
         VeinData data = VeinData.getInstance();
+
+        // Run background Auto-Scanner tick
+        AutoScanner.getInstance().tick(client);
 
         // 1. Add Sample Key (Numpad 0)
         while (addSampleKey.wasPressed()) {
@@ -132,7 +142,15 @@ public class KeyBindings {
             client.player.sendMessage(Text.literal(String.format("§6[VeinSurveyor]§r Cleared all points in §e%s§r.", session.getName())), true);
         }
 
-        // 4. New Session Key (Numpad 4)
+        // 4. Toggle Auto-Scan Key (Numpad 3)
+        while (toggleAutoScanKey.wasPressed()) {
+            AutoScanner.getInstance().toggle(client);
+            boolean on = AutoScanner.getInstance().isEnabled();
+            client.player.sendMessage(Text.literal("§b[VeinSurveyor]§r Auto-Detect (50m): " + (on ? "§aEnabled" : "§cDisabled")), true);
+            client.player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, on ? 1.5f : 0.8f);
+        }
+
+        // 5. New Session Key (Numpad 4)
         while (newSessionKey.wasPressed()) {
             VeinSession session = data.newSession();
             DebugLog.log("Created new session: " + session.getName());
@@ -140,7 +158,7 @@ public class KeyBindings {
             client.player.playSound(SoundEvents.BLOCK_AMETHYST_BLOCK_RESONATE, 0.9f, 1.5f);
         }
 
-        // 5. Delete Session Key (Numpad 5)
+        // 6. Delete Session Key (Numpad 5)
         while (deleteSessionKey.wasPressed()) {
             String oldName = data.getActiveSession().getName();
             int prevCount = data.getSessionCount();
@@ -155,7 +173,7 @@ public class KeyBindings {
             }
         }
 
-        // 6. Cycle Session Key (Numpad 6)
+        // 7. Cycle Session Key (Numpad 6)
         while (cycleSessionKey.wasPressed()) {
             if (data.getSessionCount() > 1) {
                 VeinSession session = data.nextSession();
@@ -167,7 +185,7 @@ public class KeyBindings {
             }
         }
 
-        // 7. Toggle HUD Key (Numpad 7)
+        // 8. Toggle HUD Key (Numpad 7)
         while (toggleHudKey.wasPressed()) {
             data.toggleHud();
             boolean enabled = data.isHudEnabled();
@@ -175,7 +193,7 @@ public class KeyBindings {
             client.player.sendMessage(Text.literal("§b[VeinSurveyor]§r HUD: " + (enabled ? "§aEnabled" : "§cDisabled")), true);
         }
 
-        // 8. Cycle Projection Key (Numpad 8)
+        // 9. Cycle Projection Key (Numpad 8)
         while (cycleProjKey.wasPressed()) {
             data.cycleProjection();
             DebugLog.log("Cycle projection distance: " + data.getProjectionDistance());
