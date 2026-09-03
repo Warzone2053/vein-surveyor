@@ -131,4 +131,4 @@ $$R_{\text{max}} = \max(d_i), \quad R_{\text{avg}} = \frac{1}{N} \sum_{i=1}^N d_
   ```bash
   ./gradlew build
   ```
-  The compiled `.jar` file will be generated in `build/libs/veinsurveyor-1.0.0.jar`.
+  The compiled `.jar` file will be generated in `build/libs/veinsurveyor-1.2.0.jar`.
