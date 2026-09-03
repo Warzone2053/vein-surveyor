@@ -2,7 +2,9 @@
   "category.veinsurveyor.general": "Vein Surveyor",
   "key.veinsurveyor.add_point": "Survey Ore Block (Add Point)",
   "key.veinsurveyor.undo_point": "Undo Last Survey Point",
-  "key.veinsurveyor.clear_points": "Clear Survey Points",
+  "key.veinsurveyor.clear_points": "Clear Active Vein Points",
+  "key.veinsurveyor.new_session": "New Vein Session",
+  "key.veinsurveyor.cycle_session": "Cycle Active Vein Session",
   "key.veinsurveyor.toggle_hud": "Toggle Surveyor HUD",
   "key.veinsurveyor.toggle_projection": "Cycle Projection Reach"
 }

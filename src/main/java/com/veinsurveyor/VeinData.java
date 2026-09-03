@@ -13,52 +13,84 @@ public class VeinData {
         return INSTANCE;
     }
 
-    private final List<BlockPos> sampleBlocks = new ArrayList<>();
-    private final List<Vec3d> samplePoints = new ArrayList<>();
-    private VeinAnalysis currentAnalysis = new VeinAnalysis(samplePoints);
+    private final List<VeinSession> sessions = new ArrayList<>();
+    private int activeSessionIndex = 0;
+    private int nextSessionId = 1;
 
     private boolean hudEnabled = true;
     private boolean renderEnabled = true;
     private double projectionDistance = 50.0; // default 50 blocks reach
 
-    private VeinData() {}
+    private VeinData() {
+        // Initialize with default first session
+        sessions.add(new VeinSession(nextSessionId++, "Vein 1"));
+    }
+
+    public synchronized VeinSession getActiveSession() {
+        if (sessions.isEmpty()) {
+            sessions.add(new VeinSession(nextSessionId++, "Vein 1"));
+            activeSessionIndex = 0;
+        }
+        if (activeSessionIndex < 0 || activeSessionIndex >= sessions.size()) {
+            activeSessionIndex = 0;
+        }
+        return sessions.get(activeSessionIndex);
+    }
+
+    public synchronized List<VeinSession> getAllSessions() {
+        return new ArrayList<>(sessions);
+    }
+
+    public synchronized int getActiveSessionIndex() {
+        return activeSessionIndex;
+    }
+
+    public synchronized int getSessionCount() {
+        return sessions.size();
+    }
+
+    public synchronized VeinSession newSession() {
+        VeinSession newSession = new VeinSession(nextSessionId, "Vein " + nextSessionId);
+        nextSessionId++;
+        sessions.add(newSession);
+        activeSessionIndex = sessions.size() - 1;
+        return newSession;
+    }
+
+    public synchronized VeinSession nextSession() {
+        if (sessions.size() <= 1) return getActiveSession();
+        activeSessionIndex = (activeSessionIndex + 1) % sessions.size();
+        return getActiveSession();
+    }
+
+    public synchronized VeinSession previousSession() {
+        if (sessions.size() <= 1) return getActiveSession();
+        activeSessionIndex = (activeSessionIndex - 1 + sessions.size()) % sessions.size();
+        return getActiveSession();
+    }
 
     public synchronized boolean addSample(BlockPos pos) {
-        if (sampleBlocks.contains(pos)) {
-            return false;
-        }
-        sampleBlocks.add(pos.toImmutable());
-        samplePoints.add(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5));
-        currentAnalysis = new VeinAnalysis(samplePoints);
-        return true;
+        return getActiveSession().addSample(pos);
     }
 
     public synchronized boolean undoLast() {
-        if (!samplePoints.isEmpty()) {
-            sampleBlocks.remove(sampleBlocks.size() - 1);
-            samplePoints.remove(samplePoints.size() - 1);
-            currentAnalysis = new VeinAnalysis(samplePoints);
-            return true;
-        }
-        return false;
+        return getActiveSession().undoLast();
     }
 
     public synchronized void clear() {
-        sampleBlocks.clear();
-        samplePoints.clear();
-        currentAnalysis = new VeinAnalysis(samplePoints);
+        getActiveSession().clear();
     }
 
     public synchronized List<BlockPos> getSampleBlocks() {
-        return new ArrayList<>(sampleBlocks);
+        return getActiveSession().getSampleBlocks();
     }
 
     public synchronized List<Vec3d> getSamplePoints() {
-        return new ArrayList<>(samplePoints);
+        return getActiveSession().getSamplePoints();
     }
 
     public synchronized VeinAnalysis getAnalysis() {
-        return currentAnalysis;
+        return getActiveSession().getAnalysis();
     }
 
     public boolean isHudEnabled() {

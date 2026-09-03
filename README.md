@@ -17,6 +17,7 @@ Unlike standard vanilla Minecraft ore blobs, CivNodes utilizes directional, cont
 
 **Vein Surveyor** is built specifically around this system:
 - **Trend Line Extraction:** Extracts the 3D strike vector $\vec{v}$ of continuous CivNodes veins from as few as 2 sampled ore blocks.
+- **Multi-Vein Surveying:** Supports independent, concurrent vein sessions (`Vein 1`, `Vein 2`, `Vein 3`), allowing players to track intersecting or neighboring veins simultaneously without losing previous data.
 - **Vein Density & Spacing:** Computes linear yield ($\text{ores}/\text{meter}$) and average spacing ($\mu_{\text{gap}}$) characteristic of the server's vein algorithms.
 - **Over-Tunneling Prevention:** Uses statistical gap analysis to project a **Red Cutoff Marker**, informing the player when a CivNodes vein has reached its natural termination.
 
@@ -24,38 +25,40 @@ Unlike standard vanilla Minecraft ore blobs, CivNodes utilizes directional, cont
 
 ## 2. Core Features & In-Game Surveying
 
-1. **Manual Block Tagging (`V`)**:
-   - Aim at an exposed ore block in line of sight and tap `V`.
-   - The mod captures the targeted `(X, Y, Z)` coordinate and plays an audio chime.
-   - Bounding boxes are highlighted around all surveyed points.
+1. **Multi-Vein Session Management**:
+   - Create independent vein sessions (`Vein 1`, `Vein 2`, `Vein 3`) with **`N`**.
+   - Cycle the active session with **`K`** to switch which vein is actively surveyed and rendered.
+   - Each session maintains its own isolated point list and cached 3D PCA analysis.
+   - Operations like `Z` (undo) and `C` (clear) apply strictly to the active session.
 
-2. **3D Centerline Calculation (PCA Regression)**:
-   - Once $\ge 2$ ore blocks are tagged, the mod runs 3D Principal Component Analysis (covariance matrix diagonalization) to determine the true orientation vector $\vec{v}$ and centroid $\vec{c}$.
+2. **Manual Block Tagging (`V`)**:
+   - Aim at an exposed ore block in line of sight and tap `V`.
+   - The mod captures the targeted `(X, Y, Z)` coordinate into the active vein session and plays an audio chime.
+   - In-world bounding boxes are highlighted around all surveyed points.
+
+3. **3D Centerline Calculation (PCA Regression)**:
+   - Once $\ge 2$ ore blocks are tagged in a session, the mod runs 3D Principal Component Analysis (covariance matrix diagonalization) to determine the true orientation vector $\vec{v}$ and centroid $\vec{c}$.
    - Renders a multi-zone color-coded trajectory line showing the vein's core path, high-probability reach, and statistical cutoff boundary.
 
-3. **Linear Vein Density (`ores/m`) & Gap Analysis**:
+4. **Linear Vein Density (`ores/m`) & Gap Analysis**:
    - Calculates the 1D span length along the vein axis ($L = t_{\max} - t_{\min}$), linear concentration ($\rho = (N - 1) / L$), and average spacing between ores ($\mu_{\text{gap}} = 1 / \rho$).
    - Computes a statistical **Cutoff Distance** ($3.5 \times \mu_{\text{gap}}$): if no ores appear within this distance, the survey line turns red with a **Red Termination Stop Marker**, preventing unproductive over-tunneling.
 
-4. **Radial Scatter & Containment Envelope (`±R`)**:
+5. **Radial Scatter & Containment Envelope (`±R`)**:
    - Computes the perpendicular distance $d_i$ from each surveyed ore block to the best-fit line.
    - Calculates average scatter and maximum scatter radius to recommend the minimum tunnel dimensions (e.g. `Dig 2x2 tunnel` or `Dig 3x3 tunnel`) necessary to capture all off-axis ore branches.
    - Renders wireframe cross-sectional rings along the trajectory.
 
-5. **Compact Glass HUD Overlay (`H`)**:
-   - Displays real-time statistics in the top-left corner:
-     - Sample count & vein span ($m$)
+6. **Compact Glass HUD Overlay (`H`)**:
+   - Displays real-time statistics for the active vein session in the top-left corner:
+     - Active session name & sample count
+     - Vein span length ($m$)
      - Trajectory compass heading (e.g., `ENE (68.2°, Pitch -14.5°)`)
      - Linear density (`ores/m`) & expected gap
      - Predicted cutoff distance
      - Radial scatter radius & suggested excavation profile
      - $R^2$ fit confidence bar
-
-6. **Full Session Control**:
-   - `Z`: Undo the last recorded survey point.
-   - `C`: Clear all surveyed points and reset the workspace.
-   - `J`: Cycle forward/backward projection reach (25m, 50m, 100m, 200m).
-   - `H`: Toggle HUD overlay visibility.
+     - Multi-session status bar showing sample counts across all tracked veins (e.g., `Veins: ▶[Vein 1: 5]  [Vein 2: 3]`)
 
 ---
 
@@ -98,9 +101,11 @@ $$R_{\text{max}} = \max(d_i), \quad R_{\text{avg}} = \frac{1}{N} \sum_{i=1}^N d_
 
 | Key | Action | Description |
 |---|---|---|
-| **`V`** | Survey Ore Block | Tags the block currently targeted by the crosshair. |
-| **`Z`** | Undo Point | Removes the most recently added survey point. |
-| **`C`** | Clear Survey | Clears all survey points and resets the calculation. |
+| **`V`** | Survey Ore Block | Tags the targeted ore block into the active vein session. |
+| **`Z`** | Undo Point | Removes the most recently added point from the active session. |
+| **`C`** | Clear Active Vein | Clears all points in the active session and resets its calculation. |
+| **`N`** | New Vein Session | Creates a new auto-numbered vein session (`Vein 2`, `Vein 3`, etc.) and activates it. |
+| **`K`** | Cycle Vein Session | Cycles the active session among all tracked veins. |
 | **`H`** | Toggle HUD | Shows or hides the top-left stats panel. |
 | **`J`** | Cycle Reach | Cycles projection reach (25m $\rightarrow$ 50m $\rightarrow$ 100m $\rightarrow$ 200m). |
 
