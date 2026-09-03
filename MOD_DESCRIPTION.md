@@ -1,7 +1,9 @@
 # Vein Surveyor
 
 > [!NOTE]
-> **Server Approval:** Vein Surveyor has been officially reviewed and approved by the **CivNodes** staff team for use on `play.civnodes.net`.
+> **Server Approval Status:**
+> - **CivNodes (`play.civnodes.net`):** Officially reviewed and **approved** by the staff team.
+> - **Other Servers:** Different multiplayer servers enforce varying rules regarding HUD overlays and visual survey guidelines. Please check with your server's administration or mod-approval team before using Vein Surveyor on any server not explicitly listed above.
 
 **Vein Surveyor** is a client-side Fabric mod designed for manual ore vein surveying and 3D trajectory analysis in Minecraft. It is specifically designed and tailored for the custom linear ore vein generation mechanics found on **CivNodes** (`play.civnodes.net`) and similar Civ-genre servers. 
 
