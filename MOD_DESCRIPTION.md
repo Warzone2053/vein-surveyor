@@ -1,12 +1,23 @@
 # Vein Surveyor
 
-**Vein Surveyor** is a client-side Fabric mod designed for manual ore vein surveying and 3D trajectory analysis in Minecraft. When a player discovers exposed diamond ores in tunnels or caves, they can manually log the coordinates of visible blocks. The mod then computes the 3D best-fit centerline trajectory (via 3D Principal Component Analysis), linear vein density (`ores/m`), statistical cutoff boundaries, and optimal tunnel cross-section (`±R` scatter).
+**Vein Surveyor** is a client-side Fabric mod designed for manual ore vein surveying and 3D trajectory analysis in Minecraft. It is specifically designed and tailored for the custom linear ore vein generation mechanics found on **CivNodes** (`play.civnodes.net`) and similar Civ-genre servers. 
+
+When a player discovers exposed diamond ores in tunnels or caves, they can manually log the coordinates of visible blocks. The mod then computes the 3D best-fit centerline trajectory (via 3D Principal Component Analysis), linear vein density (`ores/m`), statistical cutoff boundaries, and optimal tunnel cross-section (`±R` scatter) to follow the vein with maximum efficiency.
 
 ---
 
-## 1. Overview & Core Features
+## 1. Designed for CivNodes Ore Generation
 
-Vein Surveyor replaces manual pen-and-paper 3D line-fitting with real-time in-game statistical analysis:
+Unlike standard vanilla Minecraft ore blobs, CivNodes utilizes directional, continuous subterranean ore veins that follow distinct geological trajectories through deepslate. 
+
+**Vein Surveyor** is built specifically around this system:
+- **Trend Line Extraction:** Extracts the 3D strike vector $\vec{v}$ of continuous CivNodes veins from as few as 2 sampled ore blocks.
+- **Vein Density & Spacing:** Computes linear yield ($\text{ores}/\text{meter}$) and average spacing ($\mu_{\text{gap}}$) characteristic of the server's vein algorithms.
+- **Over-Tunneling Prevention:** Uses statistical gap analysis to project a **Red Cutoff Marker**, informing the player when a CivNodes vein has reached its natural termination.
+
+---
+
+## 2. Core Features & In-Game Surveying
 
 1. **Manual Block Tagging (`V`)**:
    - Aim at an exposed ore block in line of sight and tap `V`.
@@ -43,7 +54,7 @@ Vein Surveyor replaces manual pen-and-paper 3D line-fitting with real-time in-ga
 
 ---
 
-## 2. Compliance & Fair Play
+## 3. Compliance & Fair Play
 
 - **100% Manual Input:** The mod does **not** search chunks, peek through solid blocks, or inspect block data in unexposed areas. Coordinates are only recorded when the player physically aims their crosshair directly at a visible block and presses the survey key (`V`).
 - **No Packet Manipulation / Zero Server Traffic:** No packets are modified, intercepted, or sent to the server. All calculations and overlays occur strictly on the client.
@@ -52,7 +63,7 @@ Vein Surveyor replaces manual pen-and-paper 3D line-fitting with real-time in-ga
 
 ---
 
-## 3. Mathematical Methodology
+## 4. Mathematical Methodology
 
 ### A. Centroid
 Given $N$ sampled ore positions $\mathbf{p}_i = (x_i, y_i, z_i)$:
@@ -78,7 +89,7 @@ $$R_{\text{max}} = \max(d_i), \quad R_{\text{avg}} = \frac{1}{N} \sum_{i=1}^N d_
 
 ---
 
-## 4. Default Keybindings
+## 5. Default Keybindings
 
 | Key | Action | Description |
 |---|---|---|
@@ -90,7 +101,7 @@ $$R_{\text{max}} = \max(d_i), \quad R_{\text{avg}} = \frac{1}{N} \sum_{i=1}^N d_
 
 ---
 
-## 5. Technical Details & Build Instructions
+## 6. Technical Details & Build Instructions
 
 - **Engine:** Fabric Loader 0.16.x+ / 0.19.x+
 - **Minecraft Version:** 1.21.11
