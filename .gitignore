@@ -1,0 +1,8 @@
+.gradle/
+build/
+run/
+.idea/
+*.iml
+*.log
+veintracer_debug.txt
+.system_generated/

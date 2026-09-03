@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "veintracer",
+  "version": "${version}",
+  "name": "Vein Tracer",
+  "description": "Plot diamond ore points, calculate vein centerline trajectories, and measure density.",
+  "authors": [
+    "Jadon"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.veintracer.VeinTracerClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": ">=1.21",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

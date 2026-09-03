@@ -1,0 +1,8 @@
+{
+  "category.veintracer.general": "Vein Tracer",
+  "key.veintracer.add_point": "Sample Ore Block",
+  "key.veintracer.undo_point": "Undo Last Sample",
+  "key.veintracer.clear_points": "Clear Vein Samples",
+  "key.veintracer.toggle_hud": "Toggle Vein HUD",
+  "key.veintracer.toggle_projection": "Cycle Projection Distance"
+}

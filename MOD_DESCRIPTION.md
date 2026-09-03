@@ -1,0 +1,106 @@
+# VeinTracer — Mod Description & Server Staff Proposal
+
+## 1. Quick Staff Proposal / Discord Ticket Pitch
+
+> **Mod Name:** VeinTracer  
+> **Platform:** Fabric 1.21.11 (Client-Side Only)  
+> **Source Code:** https://github.com/[your-username]/vein-tracer  
+>
+> ### Purpose
+> VeinTracer is a client-side mathematical surveying assistant designed for manual ore vein tracing. When a player discovers exposed diamond ores in tunnels or caves, they can manually log the coordinates of visible blocks. The mod then computes the 3D best-fit centerline trajectory (via 3D Principal Component Analysis), linear vein density (`ores/m`), and optimal tunnel cross-section (`±R` scatter).
+>
+> ### Compliance & Fair Play
+> - **100% Manual Input:** The mod does **not** search chunks, peek through solid blocks, or inspect block data in unexposed areas. Coordinates are only recorded when the player physically aims their crosshair directly at a visible block and presses the sample key (`V`).
+> - **No Packet Manipulation / Zero Server Traffic:** No packets are modified, intercepted, or sent to the server. All calculations and overlays occur strictly on the client.
+> - **No Automation / No Botting:** The mod does not automate mining, movement, or player actions; it is purely an analytical calculator and visual ruler.
+> - **Open Source:** The complete source code is publicly hosted on GitHub for full transparency.
+
+---
+
+## 2. Overview & Core Features
+
+VeinTracer replaces manual pen-and-paper 3D line-fitting with real-time in-game statistical analysis:
+
+1. **Manual Block Tagging (`V`)**:
+   - Aim at an exposed ore block in line of sight and tap `V`.
+   - The mod captures the targeted `(X, Y, Z)` coordinate and plays an audio chime.
+   - Bounding boxes are highlighted around all sampled points.
+
+2. **3D Centerline Calculation (PCA Regression)**:
+   - Once $\ge 2$ ore blocks are tagged, the mod runs 3D Principal Component Analysis (covariance matrix diagonalization) to determine the true orientation vector $\vec{v}$ and centroid $\vec{c}$.
+   - Renders a colored trajectory line showing the vein's central path, backward reach, and forward projection.
+
+3. **Linear Vein Density (`ores/m`)**:
+   - Calculates the 1D span length along the vein axis ($L = t_{\max} - t_{\min}$) and linear concentration ($\rho = N / L$).
+   - Displays projected yield per 10 meters of digging along the trajectory.
+
+4. **Radial Scatter & Containment Envelope (`±R`)**:
+   - Computes the perpendicular distance $d_i$ from each sampled ore block to the best-fit line.
+   - Calculates average scatter and maximum scatter radius to recommend the minimum tunnel dimensions (e.g. `Dig 2x2 tunnel` or `Dig 3x3 tunnel`) necessary to capture all off-axis ore branches.
+   - Renders wireframe cross-sectional rings along the trajectory.
+
+5. **Compact Glass HUD Overlay (`H`)**:
+   - Displays real-time statistics in the top-left corner:
+     - Sample count & vein span ($m$)
+     - Trajectory compass heading (e.g., `ENE (68.2°, Pitch -14.5°)`)
+     - Linear density (`ores/m`)
+     - Radial scatter radius & suggested excavation profile
+     - $R^2$ fit confidence bar
+
+6. **Full Session Control**:
+   - `Z`: Undo the last recorded sample.
+   - `C`: Clear all samples and reset the workspace.
+   - `J`: Cycle forward/backward projection distance (25m, 50m, 100m, 200m).
+   - `H`: Toggle HUD overlay visibility.
+
+---
+
+## 3. Mathematical Methodology
+
+### A. Centroid
+Given $N$ sampled ore positions $\mathbf{p}_i = (x_i, y_i, z_i)$:
+$$\mathbf{c} = \frac{1}{N} \sum_{i=1}^N \mathbf{p}_i$$
+
+### B. 3D Covariance Matrix
+$$\mathbf{C} = \frac{1}{N} \sum_{i=1}^N (\mathbf{p}_i - \mathbf{c})(\mathbf{p}_i - \mathbf{c})^T$$
+
+### C. Dominant Eigenvector (Vein Direction)
+The vein's primary axis $\mathbf{v} = (v_x, v_y, v_z)$ is the dominant eigenvector of $\mathbf{C}$, extracted via power iteration:
+$$\mathbf{v}_{k+1} = \frac{\mathbf{C} \mathbf{v}_k}{\|\mathbf{C} \mathbf{v}_k\|}$$
+
+### D. 1D Projections & Linear Density
+Each sample $\mathbf{p}_i$ is projected onto the line:
+$$t_i = (\mathbf{p}_i - \mathbf{c}) \cdot \mathbf{v}$$
+$$\text{Span Length } L = \max(t_i) - \min(t_i)$$
+$$\text{Linear Density } \rho = \frac{N}{L} \quad (\text{ores / meter})$$
+
+### E. Radial Scatter & Bounding Radius
+The perpendicular offset $d_i$ of each point from the vein centerline:
+$$d_i = \|(\mathbf{p}_i - \mathbf{c}) - t_i \mathbf{v}\|$$
+$$R_{\text{max}} = \max(d_i), \quad R_{\text{avg}} = \frac{1}{N} \sum_{i=1}^N d_i$$
+
+---
+
+## 4. Default Keybindings
+
+| Key | Action | Description |
+|---|---|---|
+| **`V`** | Add Sample | Tags the block currently targeted by the crosshair. |
+| **`Z`** | Undo Sample | Removes the most recently added sample point. |
+| **`C`** | Clear Workspace | Clears all sample points and resets the calculation. |
+| **`H`** | Toggle HUD | Shows or hides the top-left stats panel. |
+| **`J`** | Cycle Projection | Cycles projection reach (25m $\rightarrow$ 50m $\rightarrow$ 100m $\rightarrow$ 200m). |
+
+---
+
+## 5. Technical Details & Build Instructions
+
+- **Engine:** Fabric Loader 0.16.x+ / 0.19.x+
+- **Minecraft Version:** 1.21.11
+- **Java Version:** 21 (OpenJDK)
+- **Dependencies:** Fabric API (`fabric-api`)
+- **Build Command:**
+  ```bash
+  ./gradlew build
+  ```
+  The compiled `.jar` file will be generated in `build/libs/veintracer-1.0.0.jar`.
