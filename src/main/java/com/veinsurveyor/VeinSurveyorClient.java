@@ -1,16 +1,16 @@
-package com.veintracer;
+package com.veinsurveyor;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.util.Identifier;
 
-public class VeinTracerClient implements ClientModInitializer {
-    public static final String MOD_ID = "veintracer";
+public class VeinSurveyorClient implements ClientModInitializer {
+    public static final String MOD_ID = "veinsurveyor";
 
     @Override
     public void onInitializeClient() {
-        DebugLog.log("Initializing VeinTracer Client (1.21.11 native)");
+        DebugLog.log("Initializing Vein Surveyor Client (1.21.11 native)");
 
         KeyBindings.register();
 

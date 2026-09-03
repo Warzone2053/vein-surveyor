@@ -1,4 +1,4 @@
-package com.veintracer;
+package com.veinsurveyor;
 
 import net.minecraft.util.math.Vec3d;
 import java.util.List;
@@ -81,7 +81,7 @@ public class VeinAnalysis {
         for (int i = 0; i < 20; i++) {
             double nx = cXX * v.x + cXY * v.y + cXZ * v.z;
             double ny = cXY * v.x + cYY * v.y + cYZ * v.z;
-            double nz = cXZ * v.x + cYZ * v.y + cZZ * v.z;
+            double nz = cXZ * v.x + cZZ * v.z;
             double len = Math.sqrt(nx * nx + ny * ny + nz * nz);
             if (len < 1e-9) break;
             v = new Vec3d(nx / len, ny / len, nz / len);

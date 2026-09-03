@@ -1,4 +1,4 @@
-package com.veintracer;
+package com.veinsurveyor;
 
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;

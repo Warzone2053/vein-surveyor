@@ -1,4 +1,4 @@
-package com.veintracer;
+package com.veinsurveyor;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -36,7 +36,7 @@ public class VeinHudOverlay {
         drawContext.fill(x + width - 1, y, x + width, y + height, borderColor); // right
 
         // Header (32-bit ARGB colors with full 0xFF alpha)
-        drawContext.drawText(tr, "◆ VEIN TRACER ◆", x + 6, y + 6, 0xFF00FFFF, true);
+        drawContext.drawText(tr, "◆ VEIN SURVEYOR ◆", x + 6, y + 6, 0xFF00FFFF, true);
         drawContext.drawText(tr, String.format("Proj: %.0fm", data.getProjectionDistance()), x + width - 68, y + 6, 0xFFAAAAAA, false);
 
         if (analysis.sampleCount == 1) {
