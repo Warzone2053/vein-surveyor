@@ -1,23 +1,10 @@
-# Vein Surveyor — Mod Description & Server Staff Proposal
+# Vein Surveyor
 
-## 1. Quick Staff Proposal / Discord Ticket Pitch
-
-> **Mod Name:** Vein Surveyor  
-> **Platform:** Fabric 1.21.11 (Client-Side Only)  
-> **Source Code:** https://github.com/Jadon/vein-surveyor  
->
-> ### Purpose
-> Vein Surveyor is a client-side mathematical surveying assistant designed for manual ore vein tracing. When a player discovers exposed diamond ores in tunnels or caves, they can manually log the coordinates of visible blocks. The mod then computes the 3D best-fit centerline trajectory (via 3D Principal Component Analysis), linear vein density (`ores/m`), and optimal tunnel cross-section (`±R` scatter).
->
-> ### Compliance & Fair Play
-> - **100% Manual Input:** The mod does **not** search chunks, peek through solid blocks, or inspect block data in unexposed areas. Coordinates are only recorded when the player physically aims their crosshair directly at a visible block and presses the survey key (`V`).
-> - **No Packet Manipulation / Zero Server Traffic:** No packets are modified, intercepted, or sent to the server. All calculations and overlays occur strictly on the client.
-> - **No Automation / No Botting:** The mod does not automate mining, movement, or player actions; it is purely an analytical calculator and visual ruler.
-> - **Open Source:** The complete source code is publicly hosted on GitHub / Forgejo for full transparency.
+**Vein Surveyor** is a client-side Fabric mod designed for manual ore vein surveying and 3D trajectory analysis in Minecraft. When a player discovers exposed diamond ores in tunnels or caves, they can manually log the coordinates of visible blocks. The mod then computes the 3D best-fit centerline trajectory (via 3D Principal Component Analysis), linear vein density (`ores/m`), statistical cutoff boundaries, and optimal tunnel cross-section (`±R` scatter).
 
 ---
 
-## 2. Overview & Core Features
+## 1. Overview & Core Features
 
 Vein Surveyor replaces manual pen-and-paper 3D line-fitting with real-time in-game statistical analysis:
 
@@ -53,6 +40,15 @@ Vein Surveyor replaces manual pen-and-paper 3D line-fitting with real-time in-ga
    - `C`: Clear all surveyed points and reset the workspace.
    - `J`: Cycle forward/backward projection reach (25m, 50m, 100m, 200m).
    - `H`: Toggle HUD overlay visibility.
+
+---
+
+## 2. Compliance & Fair Play
+
+- **100% Manual Input:** The mod does **not** search chunks, peek through solid blocks, or inspect block data in unexposed areas. Coordinates are only recorded when the player physically aims their crosshair directly at a visible block and presses the survey key (`V`).
+- **No Packet Manipulation / Zero Server Traffic:** No packets are modified, intercepted, or sent to the server. All calculations and overlays occur strictly on the client.
+- **No Automation / No Botting:** The mod does not automate mining, movement, or player actions; it is purely an analytical calculator and visual ruler.
+- **Open Source:** The complete source code is publicly hosted on GitHub / Forgejo for full transparency.
 
 ---
 
