@@ -57,6 +57,18 @@ public class VeinData {
         return newSession;
     }
 
+    public synchronized VeinSession deleteActiveSession() {
+        if (sessions.size() <= 1) {
+            getActiveSession().clear();
+            return getActiveSession();
+        }
+        sessions.remove(activeSessionIndex);
+        if (activeSessionIndex >= sessions.size()) {
+            activeSessionIndex = sessions.size() - 1;
+        }
+        return getActiveSession();
+    }
+
     public synchronized VeinSession nextSession() {
         if (sessions.size() <= 1) return getActiveSession();
         activeSessionIndex = (activeSessionIndex + 1) % sessions.size();

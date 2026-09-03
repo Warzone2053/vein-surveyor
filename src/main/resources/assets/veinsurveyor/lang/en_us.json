@@ -6,6 +6,7 @@
   "key.veinsurveyor.undo_point": "Undo Last Survey Point",
   "key.veinsurveyor.clear_points": "Clear Active Vein Points",
   "key.veinsurveyor.new_session": "New Vein Session",
+  "key.veinsurveyor.delete_session": "Delete Active Vein Session",
   "key.veinsurveyor.cycle_session": "Cycle Active Vein Session",
   "key.veinsurveyor.toggle_hud": "Toggle Surveyor HUD",
   "key.veinsurveyor.toggle_projection": "Cycle Projection Reach"

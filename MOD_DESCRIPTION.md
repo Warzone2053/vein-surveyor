@@ -27,6 +27,7 @@ Unlike standard vanilla Minecraft ore blobs, CivNodes utilizes directional, cont
 
 1. **Multi-Vein Session Management**:
    - Create independent vein sessions (`Vein 1`, `Vein 2`, `Vein 3`) with **`N`**.
+   - Delete the active vein session with **`M`**.
    - Cycle the active session with **`K`** to switch which vein is actively surveyed and rendered.
    - Each session maintains its own isolated point list and cached 3D PCA analysis.
    - Operations like `Z` (undo) and `C` (clear) apply strictly to the active session.
@@ -105,6 +106,7 @@ $$R_{\text{max}} = \max(d_i), \quad R_{\text{avg}} = \frac{1}{N} \sum_{i=1}^N d_
 | **`Z`** | Undo Point | Removes the most recently added point from the active session. |
 | **`C`** | Clear Active Vein | Clears all points in the active session and resets its calculation. |
 | **`N`** | New Vein Session | Creates a new auto-numbered vein session (`Vein 2`, `Vein 3`, etc.) and activates it. |
+| **`M`** | Delete Vein Session | Deletes the active vein session and switches to the adjacent session. |
 | **`K`** | Cycle Vein Session | Cycles the active session among all tracked veins. |
 | **`H`** | Toggle HUD | Shows or hides the top-left stats panel. |
 | **`J`** | Cycle Reach | Cycles projection reach (25m $\rightarrow$ 50m $\rightarrow$ 100m $\rightarrow$ 200m). |

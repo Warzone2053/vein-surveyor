@@ -18,6 +18,7 @@ public class KeyBindings {
     private static KeyBinding undoSampleKey;
     private static KeyBinding clearSamplesKey;
     private static KeyBinding newSessionKey;
+    private static KeyBinding deleteSessionKey;
     private static KeyBinding cycleSessionKey;
     private static KeyBinding toggleHudKey;
     private static KeyBinding cycleProjKey;
@@ -49,6 +50,12 @@ public class KeyBindings {
                 category
         ));
 
+        deleteSessionKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.veinsurveyor.delete_session",
+                GLFW.GLFW_KEY_M,
+                category
+        ));
+
         cycleSessionKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.cycle_session",
                 GLFW.GLFW_KEY_K,
@@ -68,7 +75,7 @@ public class KeyBindings {
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(KeyBindings::onClientTick);
-        DebugLog.log("All 7 keybindings registered successfully (VeinSurveyor)");
+        DebugLog.log("All 8 keybindings registered successfully (VeinSurveyor)");
     }
 
     private static void onClientTick(MinecraftClient client) {
@@ -132,7 +139,22 @@ public class KeyBindings {
             client.player.playSound(SoundEvents.BLOCK_AMETHYST_BLOCK_RESONATE, 0.9f, 1.5f);
         }
 
-        // 5. Cycle Session Key (K)
+        // 5. Delete Session Key (M)
+        while (deleteSessionKey.wasPressed()) {
+            String oldName = data.getActiveSession().getName();
+            int prevCount = data.getSessionCount();
+            VeinSession active = data.deleteActiveSession();
+            if (prevCount > 1) {
+                DebugLog.log("Deleted session: " + oldName + ", new active: " + active.getName());
+                client.player.sendMessage(Text.literal(String.format("§c[VeinSurveyor]§r Deleted §e%s§r. Now active: §e%s§r (%d samples)", oldName, active.getName(), active.getSampleCount())), true);
+                client.player.playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 0.7f, 1.4f);
+            } else {
+                DebugLog.log("Reset only remaining session: " + oldName);
+                client.player.sendMessage(Text.literal(String.format("§6[VeinSurveyor]§r Cleared sole session: §e%s§r", oldName)), true);
+            }
+        }
+
+        // 6. Cycle Session Key (K)
         while (cycleSessionKey.wasPressed()) {
             if (data.getSessionCount() > 1) {
                 VeinSession session = data.nextSession();
@@ -144,7 +166,7 @@ public class KeyBindings {
             }
         }
 
-        // 6. Toggle HUD Key (H)
+        // 7. Toggle HUD Key (H)
         while (toggleHudKey.wasPressed()) {
             data.toggleHud();
             boolean enabled = data.isHudEnabled();
@@ -152,7 +174,7 @@ public class KeyBindings {
             client.player.sendMessage(Text.literal("§b[VeinSurveyor]§r HUD: " + (enabled ? "§aEnabled" : "§cDisabled")), true);
         }
 
-        // 7. Cycle Projection Key (J)
+        // 8. Cycle Projection Key (J)
         while (cycleProjKey.wasPressed()) {
             data.cycleProjection();
             DebugLog.log("Cycle projection distance: " + data.getProjectionDistance());
