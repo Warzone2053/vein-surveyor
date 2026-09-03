@@ -17,6 +17,8 @@ public class KeyBindings {
     private static KeyBinding addSampleKey;
     private static KeyBinding undoSampleKey;
     private static KeyBinding clearSamplesKey;
+    private static KeyBinding newSessionKey;
+    private static KeyBinding cycleSessionKey;
     private static KeyBinding toggleHudKey;
     private static KeyBinding cycleProjKey;
 
@@ -41,6 +43,18 @@ public class KeyBindings {
                 category
         ));
 
+        newSessionKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.veinsurveyor.new_session",
+                GLFW.GLFW_KEY_N,
+                category
+        ));
+
+        cycleSessionKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.veinsurveyor.cycle_session",
+                GLFW.GLFW_KEY_K,
+                category
+        ));
+
         toggleHudKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.toggle_hud",
                 GLFW.GLFW_KEY_H,
@@ -54,71 +68,95 @@ public class KeyBindings {
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(KeyBindings::onClientTick);
-        DebugLog.log("Keybindings registered successfully (VeinSurveyor)");
+        DebugLog.log("All 7 keybindings registered successfully (VeinSurveyor)");
     }
 
     private static void onClientTick(MinecraftClient client) {
         if (client.player == null || client.world == null) return;
+        VeinData data = VeinData.getInstance();
 
-        // Add Sample Key
+        // 1. Add Sample Key (V)
         while (addSampleKey.wasPressed()) {
             HitResult hit = client.crosshairTarget;
             if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
                 BlockPos pos = ((BlockHitResult) hit).getBlockPos();
                 BlockState state = client.world.getBlockState(pos);
-                boolean added = VeinData.getInstance().addSample(pos);
+                VeinSession session = data.getActiveSession();
+                boolean added = session.addSample(pos);
 
-                DebugLog.log(String.format("Add sample pressed at (%d, %d, %d) [%s] - added=%s, total=%d",
-                        pos.getX(), pos.getY(), pos.getZ(), state.getBlock().getName().getString(), added, VeinData.getInstance().getSamplePoints().size()));
+                DebugLog.log(String.format("[%s] Add sample pressed at (%d, %d, %d) [%s] - added=%s, total=%d",
+                        session.getName(), pos.getX(), pos.getY(), pos.getZ(), state.getBlock().getName().getString(), added, session.getSampleCount()));
 
                 if (added) {
-                    int count = VeinData.getInstance().getSamplePoints().size();
+                    int count = session.getSampleCount();
                     client.player.sendMessage(
-                            Text.literal(String.format("§b[VeinSurveyor]§r Added sample #%d at §e(%d, %d, %d)§r [%s]",
-                                    count, pos.getX(), pos.getY(), pos.getZ(), state.getBlock().getName().getString())),
+                            Text.literal(String.format("§b[VeinSurveyor]§r [%s] Added sample #%d at §e(%d, %d, %d)§r [%s]",
+                                    session.getName(), count, pos.getX(), pos.getY(), pos.getZ(), state.getBlock().getName().getString())),
                             true
                     );
                     client.player.playSound(SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, 0.8f, 1.3f);
                 } else {
-                    client.player.sendMessage(Text.literal("§c[VeinSurveyor]§r Block already sampled!"), true);
+                    client.player.sendMessage(Text.literal(String.format("§c[VeinSurveyor]§r [%s] Block already sampled!", session.getName())), true);
                 }
             } else {
                 client.player.sendMessage(Text.literal("§e[VeinSurveyor]§r Not looking at a block!"), true);
             }
         }
 
-        // Undo Sample Key
+        // 2. Undo Sample Key (Z) - Operates on active session
         while (undoSampleKey.wasPressed()) {
-            boolean undone = VeinData.getInstance().undoLast();
-            DebugLog.log("Undo sample pressed - undone=" + undone);
+            VeinSession session = data.getActiveSession();
+            boolean undone = session.undoLast();
+            DebugLog.log(String.format("[%s] Undo sample pressed - undone=%s", session.getName(), undone));
             if (undone) {
-                int count = VeinData.getInstance().getSamplePoints().size();
-                client.player.sendMessage(Text.literal(String.format("§e[VeinSurveyor]§r Undone last sample (%d remaining)", count)), true);
+                int count = session.getSampleCount();
+                client.player.sendMessage(Text.literal(String.format("§e[VeinSurveyor]§r [%s] Undone last sample (%d remaining)", session.getName(), count)), true);
             } else {
-                client.player.sendMessage(Text.literal("§7[VeinSurveyor]§r No samples to undo."), true);
+                client.player.sendMessage(Text.literal(String.format("§7[VeinSurveyor]§r [%s] No samples to undo.", session.getName())), true);
             }
         }
 
-        // Clear Key
+        // 3. Clear Key (C) - Operates on active session
         while (clearSamplesKey.wasPressed()) {
-            VeinData.getInstance().clear();
-            DebugLog.log("Clear samples pressed");
-            client.player.sendMessage(Text.literal("§6[VeinSurveyor]§r Cleared all surveyed points."), true);
+            VeinSession session = data.getActiveSession();
+            session.clear();
+            DebugLog.log(String.format("[%s] Clear samples pressed", session.getName()));
+            client.player.sendMessage(Text.literal(String.format("§6[VeinSurveyor]§r Cleared all points in §e%s§r.", session.getName())), true);
         }
 
-        // Toggle HUD Key
+        // 4. New Session Key (N)
+        while (newSessionKey.wasPressed()) {
+            VeinSession session = data.newSession();
+            DebugLog.log("Created new session: " + session.getName());
+            client.player.sendMessage(Text.literal(String.format("§a[VeinSurveyor]§r Started new session: §e%s§r", session.getName())), true);
+            client.player.playSound(SoundEvents.BLOCK_AMETHYST_BLOCK_RESONATE, 0.9f, 1.5f);
+        }
+
+        // 5. Cycle Session Key (K)
+        while (cycleSessionKey.wasPressed()) {
+            if (data.getSessionCount() > 1) {
+                VeinSession session = data.nextSession();
+                DebugLog.log("Switched to session: " + session.getName());
+                client.player.sendMessage(Text.literal(String.format("§b[VeinSurveyor]§r Switched to active session: §e%s§r (%d samples)", session.getName(), session.getSampleCount())), true);
+                client.player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.5f, 1.2f);
+            } else {
+                client.player.sendMessage(Text.literal("§7[VeinSurveyor]§r Only 1 session exists. Press [N] to create a new vein session."), true);
+            }
+        }
+
+        // 6. Toggle HUD Key (H)
         while (toggleHudKey.wasPressed()) {
-            VeinData.getInstance().toggleHud();
-            boolean enabled = VeinData.getInstance().isHudEnabled();
+            data.toggleHud();
+            boolean enabled = data.isHudEnabled();
             DebugLog.log("Toggle HUD pressed: " + enabled);
             client.player.sendMessage(Text.literal("§b[VeinSurveyor]§r HUD: " + (enabled ? "§aEnabled" : "§cDisabled")), true);
         }
 
-        // Cycle Projection Key
+        // 7. Cycle Projection Key (J)
         while (cycleProjKey.wasPressed()) {
-            VeinData.getInstance().cycleProjection();
-            DebugLog.log("Cycle projection distance: " + VeinData.getInstance().getProjectionDistance());
-            client.player.sendMessage(Text.literal(String.format("§b[VeinSurveyor]§r Projection Reach: §e%.0f blocks§r", VeinData.getInstance().getProjectionDistance())), true);
+            data.cycleProjection();
+            DebugLog.log("Cycle projection distance: " + data.getProjectionDistance());
+            client.player.sendMessage(Text.literal(String.format("§b[VeinSurveyor]§r Projection Reach: §e%.0f blocks§r", data.getProjectionDistance())), true);
         }
     }
 }
