@@ -34,7 +34,7 @@ Unlike standard vanilla Minecraft ore blobs, CivNodes utilizes directional, cont
    - Renders a multi-zone color-coded trajectory line showing the vein's core path, high-probability reach, and statistical cutoff boundary.
 
 3. **Linear Vein Density (`ores/m`) & Gap Analysis**:
-   - Calculates the 1D span length along the vein axis ($L = t_{\max} - t_{\min}$), linear concentration ($\rho = N / L$), and average spacing between ores ($\mu_{\text{gap}} = 1 / \rho$).
+   - Calculates the 1D span length along the vein axis ($L = t_{\max} - t_{\min}$), linear concentration ($\rho = (N - 1) / L$), and average spacing between ores ($\mu_{\text{gap}} = 1 / \rho$).
    - Computes a statistical **Cutoff Distance** ($3.5 \times \mu_{\text{gap}}$): if no ores appear within this distance, the survey line turns red with a **Red Termination Stop Marker**, preventing unproductive over-tunneling.
 
 4. **Radial Scatter & Containment Envelope (`±R`)**:
@@ -85,7 +85,7 @@ $$\mathbf{v}_{k+1} = \frac{\mathbf{C} \mathbf{v}_k}{\|\mathbf{C} \mathbf{v}_k\|}
 Each sample $\mathbf{p}_i$ is projected onto the line:
 $$t_i = (\mathbf{p}_i - \mathbf{c}) \cdot \mathbf{v}$$
 $$\text{Span Length } L = \max(t_i) - \min(t_i)$$
-$$\text{Linear Density } \rho = \frac{N}{L} \quad (\text{ores / meter})$$
+$$\text{Linear Density } \rho = \frac{N - 1}{L} \quad (\text{ores / meter})$$
 
 ### E. Radial Scatter & Bounding Radius
 The perpendicular offset $d_i$ of each point from the vein centerline:

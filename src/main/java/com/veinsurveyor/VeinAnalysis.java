@@ -121,7 +121,7 @@ public class VeinAnalysis {
         this.minT = min;
         this.maxT = max;
         this.spanLength = Math.max(0.1, max - min);
-        this.linearDensity = sampleCount / this.spanLength;
+        this.linearDensity = (double) (sampleCount - 1) / this.spanLength;
         this.expectedGap = this.spanLength / (sampleCount - 1);
         this.warningDistance = Math.max(3.0, expectedGap * 2.0);
         this.cutoffDistance = Math.max(5.0, expectedGap * 3.5);
