@@ -1,4 +1,6 @@
 {
+  "key.category.veinsurveyor.general": "Vein Surveyor",
+  "key.category.veinsurveyor": "Vein Surveyor",
   "category.veinsurveyor.general": "Vein Surveyor",
   "key.veinsurveyor.add_point": "Survey Ore Block (Add Point)",
   "key.veinsurveyor.undo_point": "Undo Last Survey Point",
