@@ -60,12 +60,12 @@ public class VeinHudOverlay {
         if (analysis.sampleCount == 0) {
             drawContext.drawText(tr, String.format("Session: §e%s§r (Empty)", activeSession.getName()), x + 6, lineY, 0xFFFFFFAA, false);
             lineY += spacing;
-            drawContext.drawText(tr, "Aim at ore and press [V] to survey", x + 6, lineY, 0xFF888888, false);
+            drawContext.drawText(tr, "Aim at ore and press [Numpad 0] to survey", x + 6, lineY, 0xFF888888, false);
             lineY += spacing;
         } else if (analysis.sampleCount == 1) {
             drawContext.drawText(tr, "Samples: 1 block (Need >= 2 for line)", x + 6, lineY, 0xFFFFFFAA, false);
             lineY += spacing;
-            drawContext.drawText(tr, "Aim at next ore and press [V]", x + 6, lineY, 0xFF888888, false);
+            drawContext.drawText(tr, "Aim at next ore and press [Numpad 0]", x + 6, lineY, 0xFF888888, false);
             lineY += spacing;
         } else {
             // Stats

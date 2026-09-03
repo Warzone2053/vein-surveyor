@@ -26,14 +26,14 @@ Unlike standard vanilla Minecraft ore blobs, CivNodes utilizes directional, cont
 ## 2. Core Features & In-Game Surveying
 
 1. **Multi-Vein Session Management**:
-   - Create independent vein sessions (`Vein 1`, `Vein 2`, `Vein 3`) with **`N`**.
-   - Delete the active vein session with **`M`**.
-   - Cycle the active session with **`K`** to switch which vein is actively surveyed and rendered.
+   - Create independent vein sessions (`Vein 1`, `Vein 2`, `Vein 3`) with **`NUMPAD 4`**.
+   - Delete the active vein session with **`NUMPAD 5`**.
+   - Cycle the active session with **`NUMPAD 6`** to switch which vein is actively surveyed and rendered.
    - Each session maintains its own isolated point list and cached 3D PCA analysis.
-   - Operations like `Z` (undo) and `C` (clear) apply strictly to the active session.
+   - Operations like undo (`NUMPAD 1`) and clear (`NUMPAD 2`) apply strictly to the active session.
 
-2. **Manual Block Tagging (`V`)**:
-   - Aim at an exposed ore block in line of sight and tap `V`.
+2. **Manual Block Tagging (`NUMPAD 0`)**:
+   - Aim at an exposed ore block in line of sight and tap **`NUMPAD 0`**.
    - The mod captures the targeted `(X, Y, Z)` coordinate into the active vein session and plays an audio chime.
    - In-world bounding boxes are highlighted around all surveyed points.
 
@@ -50,7 +50,7 @@ Unlike standard vanilla Minecraft ore blobs, CivNodes utilizes directional, cont
    - Calculates average scatter and maximum scatter radius to recommend the minimum tunnel dimensions (e.g. `Dig 2x2 tunnel` or `Dig 3x3 tunnel`) necessary to capture all off-axis ore branches.
    - Renders wireframe cross-sectional rings along the trajectory.
 
-6. **Compact Glass HUD Overlay (`H`)**:
+6. **Compact Glass HUD Overlay (`NUMPAD 7`)**:
    - Displays real-time statistics for the active vein session in the top-left corner:
      - Active session name & sample count
      - Vein span length ($m$)
@@ -65,7 +65,7 @@ Unlike standard vanilla Minecraft ore blobs, CivNodes utilizes directional, cont
 
 ## 3. Compliance & Fair Play
 
-- **100% Manual Input:** The mod does **not** search chunks, peek through solid blocks, or inspect block data in unexposed areas. Coordinates are only recorded when the player physically aims their crosshair directly at a visible block and presses the survey key (`V`).
+- **100% Manual Input:** The mod does **not** search chunks, peek through solid blocks, or inspect block data in unexposed areas. Coordinates are only recorded when the player physically aims their crosshair directly at a visible block and presses the survey key.
 - **No Packet Manipulation / Zero Server Traffic:** No packets are modified, intercepted, or sent to the server. All calculations and overlays occur strictly on the client.
 - **No Automation / No Botting:** The mod does not automate mining, movement, or player actions; it is purely an analytical calculator and visual ruler.
 - **Open Source:** The complete source code is publicly hosted on GitHub / Forgejo for full transparency.
@@ -98,18 +98,20 @@ $$R_{\text{max}} = \max(d_i), \quad R_{\text{avg}} = \frac{1}{N} \sum_{i=1}^N d_
 
 ---
 
-## 5. Default Keybindings
+## 5. Default Keybindings (Numpad Layout)
 
 | Key | Action | Description |
 |---|---|---|
-| **`V`** | Survey Ore Block | Tags the targeted ore block into the active vein session. |
-| **`Z`** | Undo Point | Removes the most recently added point from the active session. |
-| **`C`** | Clear Active Vein | Clears all points in the active session and resets its calculation. |
-| **`N`** | New Vein Session | Creates a new auto-numbered vein session (`Vein 2`, `Vein 3`, etc.) and activates it. |
-| **`M`** | Delete Vein Session | Deletes the active vein session and switches to the adjacent session. |
-| **`K`** | Cycle Vein Session | Cycles the active session among all tracked veins. |
-| **`H`** | Toggle HUD | Shows or hides the top-left stats panel. |
-| **`J`** | Cycle Reach | Cycles projection reach (25m $\rightarrow$ 50m $\rightarrow$ 100m $\rightarrow$ 200m). |
+| **`NUMPAD 0`** | Survey Ore Block | Tags the targeted ore block into the active vein session. |
+| **`NUMPAD 1`** | Undo Point | Removes the most recently added point from the active session. |
+| **`NUMPAD 2`** | Clear Active Vein | Clears all points in the active session and resets its calculation. |
+| **`NUMPAD 4`** | New Vein Session | Creates a new auto-numbered vein session (`Vein 2`, `Vein 3`, etc.) and activates it. |
+| **`NUMPAD 5`** | Delete Vein Session | Deletes the active vein session and switches to the adjacent session. |
+| **`NUMPAD 6`** | Cycle Vein Session | Cycles the active session among all tracked veins. |
+| **`NUMPAD 7`** | Toggle HUD | Shows or hides the top-left stats panel. |
+| **`NUMPAD 8`** | Cycle Reach | Cycles projection reach (25m $\rightarrow$ 50m $\rightarrow$ 100m $\rightarrow$ 200m). |
+
+*(All keys can also be rebound in Minecraft's **Options $\rightarrow$ Controls $\rightarrow$ Key Binds $\rightarrow$ Vein Surveyor** menu).*
 
 ---
 

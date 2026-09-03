@@ -26,63 +26,64 @@ public class KeyBindings {
     public static void register() {
         KeyBinding.Category category = KeyBinding.Category.create(Identifier.of("veinsurveyor", "general"));
 
+        // Numpad Defaults
         addSampleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.add_point",
-                GLFW.GLFW_KEY_V,
+                GLFW.GLFW_KEY_KP_0,
                 category
         ));
 
         undoSampleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.undo_point",
-                GLFW.GLFW_KEY_Z,
+                GLFW.GLFW_KEY_KP_1,
                 category
         ));
 
         clearSamplesKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.clear_points",
-                GLFW.GLFW_KEY_C,
+                GLFW.GLFW_KEY_KP_2,
                 category
         ));
 
         newSessionKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.new_session",
-                GLFW.GLFW_KEY_N,
+                GLFW.GLFW_KEY_KP_4,
                 category
         ));
 
         deleteSessionKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.delete_session",
-                GLFW.GLFW_KEY_M,
+                GLFW.GLFW_KEY_KP_5,
                 category
         ));
 
         cycleSessionKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.cycle_session",
-                GLFW.GLFW_KEY_K,
+                GLFW.GLFW_KEY_KP_6,
                 category
         ));
 
         toggleHudKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.toggle_hud",
-                GLFW.GLFW_KEY_H,
+                GLFW.GLFW_KEY_KP_7,
                 category
         ));
 
         cycleProjKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.veinsurveyor.toggle_projection",
-                GLFW.GLFW_KEY_J,
+                GLFW.GLFW_KEY_KP_8,
                 category
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(KeyBindings::onClientTick);
-        DebugLog.log("All 8 keybindings registered successfully (VeinSurveyor)");
+        DebugLog.log("All 8 Numpad keybindings registered successfully (VeinSurveyor)");
     }
 
     private static void onClientTick(MinecraftClient client) {
         if (client.player == null || client.world == null) return;
         VeinData data = VeinData.getInstance();
 
-        // 1. Add Sample Key (V)
+        // 1. Add Sample Key (Numpad 0)
         while (addSampleKey.wasPressed()) {
             HitResult hit = client.crosshairTarget;
             if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
@@ -110,7 +111,7 @@ public class KeyBindings {
             }
         }
 
-        // 2. Undo Sample Key (Z) - Operates on active session
+        // 2. Undo Sample Key (Numpad 1) - Operates on active session
         while (undoSampleKey.wasPressed()) {
             VeinSession session = data.getActiveSession();
             boolean undone = session.undoLast();
@@ -123,7 +124,7 @@ public class KeyBindings {
             }
         }
 
-        // 3. Clear Key (C) - Operates on active session
+        // 3. Clear Key (Numpad 2) - Operates on active session
         while (clearSamplesKey.wasPressed()) {
             VeinSession session = data.getActiveSession();
             session.clear();
@@ -131,7 +132,7 @@ public class KeyBindings {
             client.player.sendMessage(Text.literal(String.format("§6[VeinSurveyor]§r Cleared all points in §e%s§r.", session.getName())), true);
         }
 
-        // 4. New Session Key (N)
+        // 4. New Session Key (Numpad 4)
         while (newSessionKey.wasPressed()) {
             VeinSession session = data.newSession();
             DebugLog.log("Created new session: " + session.getName());
@@ -139,7 +140,7 @@ public class KeyBindings {
             client.player.playSound(SoundEvents.BLOCK_AMETHYST_BLOCK_RESONATE, 0.9f, 1.5f);
         }
 
-        // 5. Delete Session Key (M)
+        // 5. Delete Session Key (Numpad 5)
         while (deleteSessionKey.wasPressed()) {
             String oldName = data.getActiveSession().getName();
             int prevCount = data.getSessionCount();
@@ -154,7 +155,7 @@ public class KeyBindings {
             }
         }
 
-        // 6. Cycle Session Key (K)
+        // 6. Cycle Session Key (Numpad 6)
         while (cycleSessionKey.wasPressed()) {
             if (data.getSessionCount() > 1) {
                 VeinSession session = data.nextSession();
@@ -162,11 +163,11 @@ public class KeyBindings {
                 client.player.sendMessage(Text.literal(String.format("§b[VeinSurveyor]§r Switched to active session: §e%s§r (%d samples)", session.getName(), session.getSampleCount())), true);
                 client.player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.5f, 1.2f);
             } else {
-                client.player.sendMessage(Text.literal("§7[VeinSurveyor]§r Only 1 session exists. Press [N] to create a new vein session."), true);
+                client.player.sendMessage(Text.literal("§7[VeinSurveyor]§r Only 1 session exists. Press [Numpad 4] to create a new vein session."), true);
             }
         }
 
-        // 7. Toggle HUD Key (H)
+        // 7. Toggle HUD Key (Numpad 7)
         while (toggleHudKey.wasPressed()) {
             data.toggleHud();
             boolean enabled = data.isHudEnabled();
@@ -174,7 +175,7 @@ public class KeyBindings {
             client.player.sendMessage(Text.literal("§b[VeinSurveyor]§r HUD: " + (enabled ? "§aEnabled" : "§cDisabled")), true);
         }
 
-        // 8. Cycle Projection Key (J)
+        // 8. Cycle Projection Key (Numpad 8)
         while (cycleProjKey.wasPressed()) {
             data.cycleProjection();
             DebugLog.log("Cycle projection distance: " + data.getProjectionDistance());
